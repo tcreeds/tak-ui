@@ -1,14 +1,19 @@
 <template>
-    <div v-if="loggedIn">
-        <button v-on:click="logout">LOGOUT</button>
-        <input type="text" placeholder="New Task Name" v-model='newTaskName' v-on:keyup.enter="addTask" />
-        <button v-on:click="addTask">ADD TASK</button>
-        <div>
-            <button v-on:click='saveTasks'>SAVE</button>
+    <div id="task-view" class="cf">
+        <button id="logout-btn" v-on:click="logout">LOGOUT</button>
+        <div id="tasks-header">
+            <div class="newtask-container">
+                <input type="text" placeholder="New Task Name" v-model='newTaskName' v-on:keyup.enter="addTask" />
+                <button v-on:click="addTask">ADD TASK</button>
+            </div>
+            <div>
+                <button v-on:click='saveTasks'>SAVE TASKS</button>
+            </div>
         </div>
-        <ul>
-            <li v-for="task in tasks" :key="task.id">
-                <task-item v-on:deletetask='deleteTask' :task='task'></task-item>
+
+        <ul class="task-list cf">
+            <li class="cf" v-for="task in tasks" :key="task.id">
+                <task-item class="task-item cf" v-on:deletetask='deleteTask' :task='task'></task-item>
             </li>
         </ul>
     </div>
@@ -83,3 +88,52 @@ export default {
     }
 }
 </script>
+
+<style>
+    #task-view{
+        width: 90%;
+        margin-left: 5%;
+        padding: none;
+    }
+    #logout-btn{
+        position: absolute;
+        top: 1em;
+        left: 03em;
+    }
+    #tasks-header{
+        margin-bottom: 1em;
+    }
+    .newtask-container{
+        margin-bottom: 2em;
+    }
+    .task-list{
+        position: relative;
+        list-style-type: none;
+        margin-bottom: 0.2em;
+        float: left;
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 5%;
+        padding: 0;
+    }
+    .task-list > li{
+        position: relative;
+        margin-bottom: 1em;
+        float: left;
+        width: 100%;
+    }
+    .task-item{
+        width: 100%;
+        padding: 0.5em;
+        box-shadow: 1.5px 1.5px 4px black;
+    }
+    .cf:before,
+    .cf:after {
+        content: " ";
+        display: table;
+    }
+
+    .cf:after {
+        clear: both;
+    }
+</style>

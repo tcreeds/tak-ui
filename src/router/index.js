@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/login'
 import Tasks from '@/components/tasks'
 import Out from '@/components/out'
