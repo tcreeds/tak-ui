@@ -18,6 +18,7 @@ export default {
         return this.post(LOGIN_URL, creds)
           .then((response) =>{
               console.log(response)
+              localStorage.setItem('user', creds.username)
               this.token = response.headers["authorization"]
               if (this.token)
                 localStorage.setItem('token', this.token)
@@ -34,6 +35,10 @@ export default {
     checkAuth() {
       var jwt = localStorage.getItem('token')
       return jwt ? true : false
+    },
+
+    getUser() {
+        return localStorage.getItem('user')
     },
 
     getToken() {

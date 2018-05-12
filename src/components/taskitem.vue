@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input class="task-name" type='text' v-model='task.name'/>
+        <input class="task-name display-input" type='text' v-model='task.name'/>
         <ul class="tag-container">
             <li class="cf" v-for='tag in task.tags'>
                 <input class="tag-type" v-model='tag.type'/>

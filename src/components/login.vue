@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-4 col-sm-offset-4" v-if="!loggedIn">
+  <div class="col-sm-4 col-sm-offset-4">
     <h2>Log In</h2>
     <div class="alert alert-danger" v-if="error">
       <p>{{ error }}</p>
@@ -36,8 +36,7 @@ export default {
         username: '',
         password: ''
       },
-      error: '',
-      loggedIn: Out.checkAuth()
+      error: ''
     }
   },
 

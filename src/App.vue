@@ -21,7 +21,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 1em;
+}
+#app > img {
+    //transform: scale(0.5);
+    width: 2em;
+    height: 2em;
 }
 button{
     border: 2px solid blue;
@@ -34,11 +39,16 @@ button{
     padding: 0 0.2em;
 }
 input{
-    border: 1px solid transparent;
+    border: none;
     transition: border 0.25s ease;
     box-sizing: border-box;
+    border-bottom: 1px solid black;
+    margin-bottom: 0.2em;
 }
-input:hover, input:focus{
+.display-input{
+    border: 1px solid transparent;
+}
+.display-input:hover, .display-input:focus{
     border: 1px solid black;
 }
 </style>

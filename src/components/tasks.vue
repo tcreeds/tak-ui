@@ -1,5 +1,7 @@
 <template>
     <div id="task-view" class="cf">
+        <span id="userGreeting" v-once>Hi {{user}}!</span>
+        <h2>TASKS</h2>
         <button id="logout-btn" v-on:click="logout">LOGOUT</button>
         <div id="tasks-header">
             <div class="newtask-container">
@@ -7,7 +9,7 @@
                 <button v-on:click="addTask">ADD TASK</button>
             </div>
             <div>
-                <button v-on:click='saveTasks'>SAVE TASKS</button>
+                <button class="save-tasks" v-on:click='saveTasks'>SAVE TASKS</button>
             </div>
         </div>
 
@@ -30,7 +32,7 @@ export default {
         return {
             newTaskName: '',
             tasks: [],
-            loggedIn: Out.checkAuth()
+            user: Out.getUser()
         }
     },
 
@@ -105,6 +107,10 @@ export default {
     }
     .newtask-container{
         margin-bottom: 2em;
+    }
+    .save-tasks{
+        float: right;
+        margin-right: 5%;
     }
     .task-list{
         position: relative;
