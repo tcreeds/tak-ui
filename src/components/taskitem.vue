@@ -1,10 +1,11 @@
 <template>
     <div>
-        <input class="task-name display-input" type='text' v-model='task.name'/>
+        <input class="task-name display-input" type='text' @keyup='onDataChanged' v-model='task.name'/>
         <ul class="tag-container">
             <li class="cf" v-for='tag in task.tags'>
-                <input class="tag-type" v-model='tag.type'/>
-                <input class="tag-value" v-model='tag.value'/><button class="delete-tag" v-on:click='deleteTag(tag)'>x</button>
+                <input class="tag-type" v-model='tag.type' @keyup='onDataChanged'/>
+                <input class="tag-value" v-model='tag.value' @keyup='onDataChanged'/>
+                <button class="delete-tag" v-on:click='deleteTag(tag)'>x</button>
             </li>
             <button class="add-tag" v-on:click='addTag'>+</button>
         </ul>
@@ -27,6 +28,9 @@ export default {
         },
         addTag: function(){
             this.task.tags.push({type:'', value:'New Tag'})
+        },
+        onDataChanged: function(){
+            this.$emit('datachanged')
         }
     }
 }

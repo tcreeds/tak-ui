@@ -8,14 +8,15 @@
                 <input type="text" placeholder="New Task Name" v-model='newTaskName' v-on:keyup.enter="addTask" />
                 <button v-on:click="addTask">ADD TASK</button>
             </div>
-            <div>
-                <button class="save-tasks" v-on:click='saveTasks'>SAVE TASKS</button>
+            <div class='saved-container'>
+                <span class="tasks-saved" v-if='unsavedData.dataSaved && !unsavedData.requestOut'>saved</span>
+                <span class="tasks-unsaved" v-if='!unsavedData.dataSaved || unsavedData.requestOut'>unsaved</span>
             </div>
         </div>
 
         <ul class="task-list cf">
             <li class="cf" v-for="task in tasks" :key="task.id">
-                <task-item class="task-item cf" v-on:deletetask='deleteTask' :task='task'></task-item>
+                <task-item class="task-item cf" v-on:deletetask='deleteTask' v-on:datachanged='onDataChanged' :task='task'></task-item>
             </li>
         </ul>
     </div>
@@ -32,7 +33,12 @@ export default {
         return {
             newTaskName: '',
             tasks: [],
-            user: Out.getUser()
+            user: Out.getUser(),
+            timeoutId: 0,
+            unsavedData: {
+                requestOut: false,
+                dataSaved: true
+            }
         }
     },
 
@@ -70,13 +76,32 @@ export default {
             this.newTaskName = ''
         },
         saveTasks: function(){
-            Out.saveTasks(this.tasks).then(()=> console.log("saved"))
+            if (!this.unsavedData.requestOut && !this.unsavedData.dataSaved) {
+                this.unsavedData.requestOut = true
+                Out.saveTasks(this.tasks)
+                    .then(this.onDataSaved)
+                    .catch(this.onDataSaveFailed)
+            }
         },
         loadTasks: function(){
             Out.loadTasks().then((response) => {
                 this.tasks = response.data;
                 console.log(this.tasks)
             })
+        },
+        onDataChanged: function(){
+            console.log('balls')
+            this.unsavedData.dataSaved = false
+            window.clearTimeout(this.timeoutId)
+            this.timeoutId = window.setTimeout(this.saveTasks, 1100)
+        },
+        onDataSaved: function(){
+            this.unsavedData.dataSaved = true
+            this.unsavedData.requestOut = false
+        },
+        onDataSaveFailed: function(){
+            this.unsavedData.dataSaved = false
+            this.unsavedData.requestOut = false
         },
         newId: function(){
             let num = localStorage.getItem("idCounter") || 0
@@ -108,9 +133,15 @@ export default {
     .newtask-container{
         margin-bottom: 2em;
     }
-    .save-tasks{
+    .saved-container{
         float: right;
         margin-right: 5%;
+    }
+    .tasks-saved{
+        color: green;
+    }
+    .tasks-unsaved{
+        color: red;
     }
     .task-list{
         position: relative;
