@@ -36,7 +36,13 @@ button{
     font-size: 1em;
     font-family: Helvetica;
     cursor: pointer;
-    padding: 0 0.2em;
+    padding: 0.1 0.3em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+}
+button:hover{
+    background: white;
+    color: blue;
 }
 input{
     border: none;
@@ -44,6 +50,8 @@ input{
     box-sizing: border-box;
     border-bottom: 1px solid black;
     margin-bottom: 0.2em;
+    font-size: 1em;
+    padding-bottom: 0.2em;
 }
 .display-input{
     border: 1px solid transparent;

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-4 col-sm-offset-4">
+  <div class="login-container">
     <h2>Log In</h2>
     <div class="alert alert-danger" v-if="error">
       <p>{{ error }}</p>
@@ -8,7 +8,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Enter your username"
+        placeholder="username"
         v-model="credentials.username"
       >
     </div>
@@ -16,11 +16,11 @@
       <input
         type="password"
         class="form-control"
-        placeholder="Enter your password"
+        placeholder="password"
         v-model="credentials.password"
       >
     </div>
-    <button class="btn btn-primary" @click="submit">Log In</button>
+    <button class="login-btn" @click="submit">Log In</button>
   </div>
 </template>
 
@@ -71,3 +71,16 @@ export default {
 
 }
 </script>
+
+<style>
+    .login-container{
+        font-size: 1.2em;
+    }
+    .form-control{
+        text-align: center;
+        font-size: 1em;
+    }
+    .login-btn{
+        margin-top: 0.5em;
+    }
+</style>
