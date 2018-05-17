@@ -66,6 +66,7 @@ export default {
 
         deleteTask: function(item){
             this.tasks.splice(this.tasks.indexOf(item), 1)
+            this.onDataChanged()
         },
         addTask: function(){
             this.tasks.push({
@@ -90,7 +91,6 @@ export default {
             })
         },
         onDataChanged: function(){
-            console.log('balls')
             this.unsavedData.dataSaved = false
             window.clearTimeout(this.timeoutId)
             this.timeoutId = window.setTimeout(this.saveTasks, 1100)
