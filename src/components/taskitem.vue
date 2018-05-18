@@ -5,16 +5,20 @@
             <li class="cf" v-for='tag in task.tags'>
                 <input class="tag-type" v-model='tag.type' @keyup='onDataChanged'/>
                 <input class="tag-value" v-model='tag.value' @keyup='onDataChanged'/>
-                <button class="delete-tag" v-on:click='deleteTag(tag)'>x</button>
+                <font-awesome-icon icon="times" class="delete-tag" v-on:click='deleteTag(tag)'/>
             </li>
-            <button class="add-tag" v-on:click='addTag'>+</button>
+            <font-awesome-icon icon="plus" class="add-tag" v-on:click='addTag'/>
         </ul>
-        <button class="delete-task" v-on:click='deleteTask'>x</button>
+        <div class="task-button-container">
+             <font-awesome-icon icon="check" class="task-button-complete" v-on:click='completeTask' />
+             <font-awesome-icon icon="times" class="task-button-delete" v-on:click='deleteTask' />
+        </div>
     </div>
 </template>
 
 <script>
 
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 export default {
     props: ['task'],
@@ -23,8 +27,13 @@ export default {
         deleteTask: function(){
             this.$emit('deletetask', this.task)
         },
+        completeTask: function(){
+            this.task.state = 'completed'
+            this.$emit('datachanged')
+        },
         deleteTag: function(tag){
             this.task.tags.splice(this.task.tags.indexOf(tag), 1)
+            this.$emit('datachanged')
         },
         addTag: function(){
             this.task.tags.push({type:'', value:'New Tag'})
@@ -32,6 +41,10 @@ export default {
         onDataChanged: function(){
             this.$emit('datachanged')
         }
+    },
+
+    components: {
+        FontAwesomeIcon
     }
 }
 
@@ -50,10 +63,12 @@ export default {
         width: 90%;
         padding: 0;
         margin-left: 5%;
+        margin-bottom: 0.2em;
     }
     .tag-container > li{
         position: relative;
         list-style-type: none;
+        margin-bottom: 0.5em;
     }
     .tag-type, .tag-value{
         font-size: 1em;
@@ -62,33 +77,24 @@ export default {
         border-radius: 5px;
         margin-right: 0.3em;
     }
-    .add-tag{
+    .add-tag, .delete-tag{
         float: left;
-        border-radius: 50%;
-        padding: 0;
-        width: 1em;
-        height: 1em;
     }
-    .delete-tag{
-        float: left;
-        background: darkgrey;
-        color: white;
-        border-radius: 50%;
-        border: none;
-        padding: 0;
-        width: 1em;
-        height: 1em;
-    }
-    .delete-task{
+    .task-button-container{
         position: absolute;
         right: 0.5em;
-        background: darkgrey;
-        color: white;
-        border-radius: 50%;
-        border: none;
-        padding: 0;
-        width: 1em;
-        height: 1em;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .task-button-complete{
+        cursor: pointer;
+        font-size: 2em;
+        margin-right: 0.5em;
+    }
+    .task-button-delete{
+        font-size: 1em;
+        cursor: pointer;
+        margin-right: 0.5em;
     }
 
 </style>

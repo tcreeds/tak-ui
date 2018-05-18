@@ -13,9 +13,12 @@
                 <span class="tasks-unsaved" v-if='!unsavedData.dataSaved || unsavedData.requestOut'>unsaved</span>
             </div>
         </div>
-
+        <input type="radio" id="one" value="open" v-model="taskStateFilter">
+        <label for="one">Open</label>
+        <input type="radio" id="two" value="completed" v-model="taskStateFilter">
+        <label for="two">Completed</label>
         <ul class="task-list cf">
-            <li class="cf" v-for="task in tasks" :key="task.id">
+            <li class="cf" v-for="task in taskView" :key="task.id">
                 <task-item class="task-item cf" v-on:deletetask='deleteTask' v-on:datachanged='onDataChanged' :task='task'></task-item>
             </li>
         </ul>
@@ -35,6 +38,7 @@ export default {
             tasks: [],
             user: Out.getUser(),
             timeoutId: 0,
+            taskStateFilter: 'open',
             unsavedData: {
                 requestOut: false,
                 dataSaved: true
@@ -50,6 +54,16 @@ export default {
         })
         if (Out.checkAuth())
             this.loadTasks()
+    },
+
+    computed: {
+        taskView: function(){
+            console.log(this.taskStateFilter)
+            switch(this.taskStateFilter){
+                case 'open': return this.openTasks(); break;
+                case 'completed': return this.completedTasks(); break;
+            }
+        }
     },
 
     methods: {
@@ -71,6 +85,7 @@ export default {
         addTask: function(){
             this.tasks.push({
                 id: this.newId(),
+                state: 'open',
                 name: this.newTaskName,
                 tags: []
             })
@@ -107,6 +122,12 @@ export default {
             let num = localStorage.getItem("idCounter") || 0
             localStorage.setItem("idCounter", ++num)
             return num;
+        },
+        openTasks: function(){
+            return this.tasks.filter((task) => task.state == 'open')
+        },
+        completedTasks: function(){
+            return this.tasks.filter((task) => task.state == 'completed')
         }
     },
 
