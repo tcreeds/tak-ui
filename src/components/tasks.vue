@@ -12,11 +12,19 @@
                 <span class="tasks-saved" v-if='unsavedData.dataSaved && !unsavedData.requestOut'>saved</span>
                 <span class="tasks-unsaved" v-if='!unsavedData.dataSaved || unsavedData.requestOut'>unsaved</span>
             </div>
+            <div class="header-container">
+                <input type="radio" id="one" value="open" v-model="taskStateFilter">
+                <label for="one">Open</label>
+                <input type="radio" id="two" value="completed" v-model="taskStateFilter">
+                <label for="two">Completed</label>
+                <input type="radio" id="two" value="all" v-model="taskStateFilter">
+                <label for="two">All</label>
+            </div>
+            <div>
+                <input type="text" placeholder="Filter" v-model='filterText' />
+            </div>
         </div>
-        <input type="radio" id="one" value="open" v-model="taskStateFilter">
-        <label for="one">Open</label>
-        <input type="radio" id="two" value="completed" v-model="taskStateFilter">
-        <label for="two">Completed</label>
+
         <ul class="task-list cf">
             <li class="cf" v-for="task in taskView" :key="task.id">
                 <task-item class="task-item cf" v-on:deletetask='deleteTask' v-on:datachanged='onDataChanged' :task='task'></task-item>
@@ -39,6 +47,7 @@ export default {
             user: Out.getUser(),
             timeoutId: 0,
             taskStateFilter: 'open',
+            filterText: '',
             unsavedData: {
                 requestOut: false,
                 dataSaved: true
@@ -58,11 +67,17 @@ export default {
 
     computed: {
         taskView: function(){
-            console.log(this.taskStateFilter)
-            switch(this.taskStateFilter){
-                case 'open': return this.openTasks(); break;
-                case 'completed': return this.completedTasks(); break;
-            }
+            return this.tasks.filter((task) => {
+                if (this.filterText.trim().length > 0){
+                    return task.name && task.name.includes(this.filterText) ||
+                        task.tags.filter((tag) => {
+                            return tag.type.includes(this.filterText) || tag.value.includes(this.filterText)
+                        }).length > 0
+                }
+                return true;
+            }).filter((task) => {
+                return this.taskStateFilter == 'all' || task.state == this.taskStateFilter
+            })
         }
     },
 
@@ -150,13 +165,17 @@ export default {
     }
     #tasks-header{
         margin-bottom: 1em;
+        position: relative;
     }
     .newtask-container{
         margin-bottom: 2em;
     }
     .saved-container{
-        float: right;
-        margin-right: 5%;
+        position: absolute;
+        right: 5%;
+    }
+    .header-container{
+        margin-bottom: 0.7em;
     }
     .tasks-saved{
         color: green;

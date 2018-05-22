@@ -28,7 +28,10 @@ export default {
             this.$emit('deletetask', this.task)
         },
         completeTask: function(){
-            this.task.state = 'completed'
+            if (this.task.state != 'completed')
+                this.task.state = 'completed'
+            else
+                this.task.state = 'open'
             this.$emit('datachanged')
         },
         deleteTag: function(tag){
