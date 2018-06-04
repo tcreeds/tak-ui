@@ -3,6 +3,14 @@
         <span id="userGreeting" v-once>Hi {{user}}!</span>
         <h2>TASKS</h2>
         <button id="logout-btn" v-on:click="logout">LOGOUT</button>
+        <button id="toggle-views-btn" v-on:click="toggleViewList">V</button>
+        <div v-if="viewListOpen">
+            <ul>
+                <li v-for="view in views" v-on:click="filterText=view.filter">
+                    {{view.name}}
+                </li>
+            </ul>
+        </div>
         <div id="tasks-header">
             <div class="newtask-container">
                 <input type="text" placeholder="New Task Name" v-model='newTaskName' v-on:keyup.enter="addTask" />
@@ -51,18 +59,17 @@ export default {
             unsavedData: {
                 requestOut: false,
                 dataSaved: true
-            }
+            },
+            views: [],
+            viewListOpen: false
         }
     },
 
     mounted: function(){
-        EventBus.$on('login-change', this.checkAuth)
-        EventBus.$on('login-change', () => {
-            if (Out.checkAuth())
-                this.loadTasks()
-        })
-        if (Out.checkAuth())
+        if (Out.checkAuth()){
             this.loadTasks()
+            this.loadViews()
+        }
     },
 
     computed: {
@@ -105,6 +112,7 @@ export default {
                 tags: []
             })
             this.newTaskName = ''
+            this.onDataChanged()
         },
         saveTasks: function(){
             if (!this.unsavedData.requestOut && !this.unsavedData.dataSaved) {
@@ -118,6 +126,11 @@ export default {
             Out.loadTasks().then((response) => {
                 this.tasks = response.data;
                 console.log(this.tasks)
+            })
+        },
+        loadViews: function(){
+            Out.loadViews().then((response) => {
+                this.views = response.data
             })
         },
         onDataChanged: function(){
@@ -143,6 +156,9 @@ export default {
         },
         completedTasks: function(){
             return this.tasks.filter((task) => task.state == 'completed')
+        },
+        toggleViewList: function(){
+            this.viewListOpen = !this.viewListOpen
         }
     },
 
@@ -161,7 +177,12 @@ export default {
     #logout-btn{
         position: absolute;
         top: 1em;
-        left: 03em;
+        left: 3em;
+    }
+    #toggle-views-btn{
+        position: absolute;
+        top: 1em;
+        right: 2em;
     }
     #tasks-header{
         margin-bottom: 1em;

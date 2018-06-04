@@ -56,6 +56,10 @@ export default {
         //localStorage.setItem('tasks', JSON.stringify(tasks))
     },
 
+    loadViews: function(){
+        return this.get('/views')
+    },
+
     get: function(path, data){
         return axios.get(this.getUrl(path), {
             'headers': { 'Authorization': this.getToken() }
