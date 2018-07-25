@@ -9,9 +9,9 @@ export default {
 
     getUrl: function(path){
         let isLocal = localStorage.getItem('isLocal')
-        if (isLocal)
+        if (isLocal && false)
             return 'http://localhost:8080' + path
-        return 'https://tak-api.tcreeds.io' + path
+        return 'https://7eog8bdfu5.execute-api.us-east-1.amazonaws.com/dev/' + path
     },
 
     login(creds) {
@@ -47,17 +47,13 @@ export default {
         return this.token
     },
 
-    loadTasks: function(){
-        return this.get('/tasks')
+    loadData: function(){
+        return this.get('/tak-get')
         //return JSON.parse(localStorage.getItem('tasks'))
     },
-    saveTasks: function(tasks){
-        return this.post('/tasks', tasks)
+    saveData: function(tasks){
+        return this.post('/tak-update', tasks)
         //localStorage.setItem('tasks', JSON.stringify(tasks))
-    },
-
-    loadViews: function(){
-        return this.get('/views')
     },
 
     get: function(path, data){

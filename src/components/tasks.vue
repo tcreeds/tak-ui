@@ -3,10 +3,10 @@
         <span id="userGreeting" v-once>Hi {{user}}!</span>
         <h2>TASKS</h2>
         <button id="logout-btn" v-on:click="logout">LOGOUT</button>
-        <button id="toggle-views-btn" v-on:click="toggleViewList">V</button>
-        <div v-if="viewListOpen">
-            <ul>
-                <li v-for="view in views" v-on:click="filterText=view.filter">
+        <div id="view-list">
+            <button id="toggle-views-btn" v-on:click="toggleViewList">V</button>
+            <ul v-if="viewListOpen">
+                <li v-for="view in views" v-bind:key="view.name" v-on:click="filterText=view.filter">
                     {{view.name}}
                 </li>
             </ul>
@@ -17,8 +17,8 @@
                 <button v-on:click="addTask">ADD TASK</button>
             </div>
             <div class='saved-container'>
-                <span class="tasks-saved" v-if='unsavedData.dataSaved && !unsavedData.requestOut'>saved</span>
-                <span class="tasks-unsaved" v-if='!unsavedData.dataSaved || unsavedData.requestOut'>unsaved</span>
+                <button class="tasks-saved" v-if='unsavedData.dataSaved && !unsavedData.requestOut'>saved</button>
+                <button class="tasks-unsaved" v-if='!unsavedData.dataSaved || unsavedData.requestOut'>SAVE</button>
             </div>
             <div class="header-container">
                 <input type="radio" id="one" value="open" v-model="taskStateFilter">
@@ -67,8 +67,7 @@ export default {
 
     mounted: function(){
         if (Out.checkAuth()){
-            this.loadTasks()
-            this.loadViews()
+            this.loadData()
         }
     },
 
@@ -114,29 +113,26 @@ export default {
             this.newTaskName = ''
             this.onDataChanged()
         },
-        saveTasks: function(){
+        savaData: function(){
             if (!this.unsavedData.requestOut && !this.unsavedData.dataSaved) {
                 this.unsavedData.requestOut = true
-                Out.saveTasks(this.tasks)
+                Out.saveData({tasks: this.tasks, views: this.views})
                     .then(this.onDataSaved)
                     .catch(this.onDataSaveFailed)
             }
         },
-        loadTasks: function(){
-            Out.loadTasks().then((response) => {
-                this.tasks = response.data;
+        loadData: function(){
+            Out.loadData().then((response) => {
+                this.tasks = response.data.tasks
+                this.views = response.data.views
                 console.log(this.tasks)
-            })
-        },
-        loadViews: function(){
-            Out.loadViews().then((response) => {
-                this.views = response.data
+                console.log(this.views)
             })
         },
         onDataChanged: function(){
-            this.unsavedData.dataSaved = false
+            /*this.unsavedData.dataSaved = false
             window.clearTimeout(this.timeoutId)
-            this.timeoutId = window.setTimeout(this.saveTasks, 1100)
+            this.timeoutId = window.setTimeout(this.saveData, 1100)*/
         },
         onDataSaved: function(){
             this.unsavedData.dataSaved = true
@@ -147,9 +143,12 @@ export default {
             this.unsavedData.requestOut = false
         },
         newId: function(){
-            let num = localStorage.getItem("idCounter") || 0
-            localStorage.setItem("idCounter", ++num)
-            return num;
+            function s4() {
+              return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
         },
         openTasks: function(){
             return this.tasks.filter((task) => task.state == 'open')
@@ -179,10 +178,24 @@ export default {
         top: 1em;
         left: 3em;
     }
-    #toggle-views-btn{
+    #view-list{
         position: absolute;
         top: 1em;
         right: 2em;
+        width: 10em;
+        max-width: 90%;
+    }
+    #view-list > ul{
+        width: 100%;
+        float: right;
+        list-style-type: none;
+        background: white;
+    }
+    #view-list li{
+        cursor: pointer;
+    }
+    #toggle-views-btn{
+        float: right;
     }
     #tasks-header{
         margin-bottom: 1em;
